@@ -1,0 +1,54 @@
+<workflow-app name="HIVE_QL_Query" xmlns="uri:oozie:workflow:0.4">
+
+  <!--<credentials>
+    <credential name='hs2cred' type='hive2'>
+	  <property>
+	    <name>hive2.jdbc.url</name>
+	    <value>${jdbcurlshort}</value>
+	  </property>
+	  <property>
+	    <name>hive2.server.principal</name>
+	    <value>${hs2principal}</value>
+	  </property>
+    </credential>
+  </credentials>-->
+  
+  
+  <credentials>
+	<credential name='hive_credentials' type='hcat'>
+		<property>
+			<name>hcat.metastore.uri</name>
+			<value>thrift://hadoop.terminal:9000</value>
+		</property>
+		<property>
+			<name>hcat.metastore.principal</name>
+			<value>hive/_HOST@Hadoop</value>
+		</property>
+	</credential>
+  </credentials>
+
+  <start to="Hive_Action" />
+  
+  <!--Hive Action -->
+  <action name="Hive_Action" cred = 'hive_credentials'>
+    <hive xmlns = "uri:oozie:hive-action:0.4">
+	  <job-tracker>http://hadoop.terminal:8002</job-tracker>
+	  <name-node>hdfs://hdp2cluster</name-node>
+	   
+	  <script>hdfs://hdp2cluster/user/prateekkhare/HIVE_QL_Query.sql</script>  
+	  
+	</hive>
+	
+	<ok to="end" />
+	<error to = "kill_job" />
+	
+  </action>
+  <!--END Hive Action -->
+  
+  <kill name = "kill_job" >
+    <message>Hive failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+  </kill>
+  
+  <end name = "end" />
+
+</workflow-app>

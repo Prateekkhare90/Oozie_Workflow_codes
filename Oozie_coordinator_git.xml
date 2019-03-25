@@ -1,0 +1,20 @@
+<coordinator-app name="HIVE_QL_Query" frequency="${coord:days(1)}" start="2018-08-22T05:00Z" end="2018-10-01T05:00Z" timezone="UTC" xmlns="uri:oozie:coordinator:0.2">
+   <controls>
+		<concurrency>1</concurrency>
+   </controls>
+   <action>
+      <workflow>
+		<app-path>${name_node}${path_hdfs_workflow_root}/Oozie_WorkFlow.xml</app-path>
+	    <configuration>
+				<property>
+                    <name>jobTracker</name>
+                    <value>${jobTracker}</value>
+                </property>
+                <property>
+                    <name>nameNode</name>
+                    <value>${nameNode}</value>
+                </property>                        
+          </configuration>
+      </workflow>
+   </action>	
+</coordinator-app>
